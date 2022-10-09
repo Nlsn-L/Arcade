@@ -7,10 +7,17 @@ let snakeX = 300;
 let snakeY = 300;
 let pelletX = Math.floor(Math.random() * column) * blockSize;
 let pelletY = Math.floor(Math.random() * row) * blockSize;
+let greenPx = Math.floor(Math.random() * column) * blockSize;
+let greenPy = Math.floor(Math.random() * row) * blockSize;
+let pellTimer = 0;
+let tempSpeed = 1
 let velocityX = 0;
 let velocityY = 0;
 let snakeBody = [];
 let gameState = 2;
+let score = 0;
+let wallX = Math.floor(Math.random() * column) * blockSize;
+let wallY = Math.floor(Math.random() * row) * blockSize;
 
 
 window.onload = function(){
@@ -63,21 +70,17 @@ function update(){
 // the function that holds all functions 
 function main(){
     
-    console.log(gameState)
     if (gameState === 0){
-    drawSnake();
-    snakeX += velocityX * blockSize
-    snakeY += velocityY * blockSize
-    drawPellets();
-    detectCollision();
-    detectBorders();
-    addToSnake();
-
+        classicMode();
     }else if (gameState === 1 ){
         gameOver();
     }else if (gameState === 2){
         menu();
+    } else if (gameState === 3){
+        arcadeMode();
+        
     }
+
 
 
 
@@ -99,12 +102,19 @@ function drawPellets(){
 
 }
 
-
+// checks if the snake 'eats' itself 
 //detects if the player "eats" a pellet, and adds it to the snakebody array
 // gives the new pellet random coordinates and draws it
 function detectCollision(){
 
+    for (let i = 0; i < snakeBody.length; i++){
+        if ((snakeBody[i][0] === snakeX && snakeBody[i][1] === snakeY)){
+            gameState = 1;
+        }
+    }
+
     if (snakeX == pelletX && snakeY == pelletY){
+        score += 100
         snakeBody.push([pelletX,pelletY])    
         pelletX = Math.floor(Math.random() * column) * blockSize;
         pelletY = Math.floor(Math.random() * row) * blockSize;
@@ -112,6 +122,13 @@ function detectCollision(){
     }
 
 }
+
+function updateScore(){
+    let Score = document.getElementById('Score')
+    Score.innerHTML = 'Score:' + score
+
+}
+
 
 // checks perimeter of canvas to see if there is a game over
 function detectBorders(){
@@ -145,25 +162,27 @@ function addToSnake(){
 
 function gameOver(){
 
-    ctx.font = "100px Karmatic Arcade"
+    ctx.font = "75px Karmatic Arcade"
     ctx.fillStyle = 'white'
-    ctx.fillText("Game Over!", 50,300)
+    ctx.fillText("Game Over!", canvas.width/2-290,300)
 
 }
 
 function menu(){
     
      ctx.fillStyle = 'black'
-     canvas.width = screen.width
-     canvas.height = screen.height
+     row = 58
+     column = 30
+     canvas.width = row * blockSize
+     canvas.height = column * blockSize
      document.getElementById('canvas').style.marginTop = 0;
      document.getElementById('title').style.display = 'none'
      ctx.fillRect(0,0,canvas.width,canvas.height)
    
-    ctx.font = '100px arial'
+    ctx.font = '100px Karmatic Arcade'
     ctx.fillStyle = 'white' 
-    ctx.fillText('Snake',canvas.width/2 - 150,canvas.height/2 - 200)
-    ctx.font = '40px arial'
+    ctx.fillText('Snake',canvas.width/2 - 200,canvas.height/2 - 200)
+    ctx.font = '40px Karmatic Arcade'
     ctx.fillText("Classic",650,350)
     ctx.fillText("Arcade",650,425)
 
@@ -181,3 +200,103 @@ function menu(){
     }
 
 }
+
+function arcadeMode(){
+
+    arcadeCanvas();
+    drawSnake();
+    snakeX += velocityX * blockSize
+    snakeY += velocityY * blockSize
+    drawPellets();
+    detectCollision();
+    updateScore();
+    addToSnake();
+    noBorders();
+    pellTimer += 1
+    if (pellTimer >=300){
+        greenPellet();
+
+    }
+    greenEaten();
+ 
+}
+
+function noBorders(){
+
+    if (snakeX < -25){
+        snakeX += canvas.width + 25;
+    }
+    if (snakeX > canvas.width){
+        snakeX -= canvas.width + 75;
+    }
+    if (snakeY < -25){
+        snakeY += canvas.height + 75
+    }
+    if (snakeY >= canvas.height){
+        snakeY -= canvas.height + 50
+    }
+
+
+
+}
+
+function arcadeCanvas(){
+
+    document.getElementById('canvas').style.marginTop = 30;
+    document.getElementById('title').style.display = 'block';
+    document.getElementById('Score').style.display = 'block';
+    row = 23
+    column = 50
+    canvas.width = column * blockSize
+    canvas.height = row * blockSize 
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0,0,canvas.width,canvas.height)
+
+}
+
+function greenPellet(){
+
+    
+    ctx.fillStyle = 'green'
+    ctx.fillRect(greenPx,greenPy,25,25)
+
+
+
+}
+
+function greenEaten(){
+
+    if ( snakeX == greenPx && snakeY == greenPy){
+        score += 200;
+        pellTimer = 0;
+        greenPx = Math.floor(Math.random() * column) * blockSize;
+        greenPy = Math.floor(Math.random() * row) * blockSize;
+        greenPellet();
+    }
+
+}
+
+
+function classicMode(){
+
+    document.getElementById('canvas').style.marginTop = 30;
+    document.getElementById('title').style.display = 'block'    
+    document.getElementById('Score').style.display = 'block'  
+  
+    row = 25
+    column = 25  
+    canvas.width = row * blockSize
+    canvas.height = column * blockSize  
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0,0,canvas.width,canvas.height)
+    drawSnake();
+    snakeX += velocityX * blockSize
+    snakeY += velocityY * blockSize
+    drawPellets();
+    detectCollision();
+    updateScore();
+    detectBorders();
+    addToSnake();
+
+}
+

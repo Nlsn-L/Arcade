@@ -1,6 +1,6 @@
 @font-face {
-    font-family: Karmatic Arcade;
-    src: url('http://fonts.cdnfonts.com/css/karmatic-arcade');
+    font-family: 'Karmatic Arcade';
+    src: url('karmatic-arcade.regular.ttf') format('ttf');
 }
                                                 
 
@@ -13,5 +13,15 @@ body{
 
 canvas{
     margin-top: 30px;
+    
+}
+#Score{
+    margin: 0;
+    margin-bottom: 3px;
 
 }
+
+h1{
+    margin-bottom: 10px;
+}
+
