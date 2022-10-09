@@ -27,6 +27,7 @@ window.onload = function(){
     canvas.height = row * blockSize;
     canvas.width = column * blockSize;
     ctx = canvas.getContext('2d');
+    userName();
 
     //event listener for arrow key presses
     document.addEventListener('keydown' , changeDirection);
@@ -62,7 +63,7 @@ window.onload = function(){
 function update(){
     ctx.fillStyle = 'black'
     ctx.fillRect(0,0,canvas.width, canvas.height)
-
+    
     main();
 }
 
@@ -297,6 +298,16 @@ function classicMode(){
     updateScore();
     detectBorders();
     addToSnake();
+
+}
+
+function userName(){
+
+    let user = prompt("Please enter name!")
+    if (user != null){
+        document.getElementById('title').innerHTML = user +"s" + " " + "Snake!";
+    }
+
 
 }
 
